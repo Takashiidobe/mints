@@ -3,10 +3,8 @@ extern crate alloc;
 pub mod stdio;
 
 use alloc::fmt;
-use alloc::string::ToString as _;
 use alloc::vec::Vec;
-use core::error::Error;
-use core::ffi::{c_char, c_int, c_long};
+use core::ffi::{c_char, c_int};
 use core::{ffi::CStr, fmt::Write, slice};
 
 unsafe extern "C" {
@@ -25,7 +23,7 @@ impl Write for Fd {
 }
 
 #[inline(always)]
-fn _print_to(fd: i16, args: fmt::Arguments) {
+pub fn _print_to(fd: i16, args: fmt::Arguments) {
     let _ = Fd(fd).write_fmt(args);
 }
 

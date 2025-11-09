@@ -1,0 +1,8 @@
+[build]
+target = "./m68k-atari-mintelf.json"
+
+[unstable]
+build-std = ["core", "alloc"]
+
+[toolchain]
+channel = "nightly"

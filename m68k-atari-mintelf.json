@@ -1,0 +1,48 @@
+{
+  "arch": "m68k",
+  "atomic-cas": false,
+  "cpu": "M68040",
+  "crt-objects-fallback": "false",
+  "crt-static-default": false,
+  "crt-static-respected": false,
+  "code-model": "large",
+  "data-layout": "E-m:e-p:32:16:32-i8:8:8-i16:16:16-i32:16:32-n8:16:32-a:0:16-S16",
+  "dynamic-linking": true,
+  "eh-frame-header": false,
+  "executables": true,
+  "has-rpath": true,
+  "has-thread-local": true,
+  "linker": "m68k-atari-mintelf-gcc",
+  "llvm-target": "m68k-unknown-elf",
+  "linker-is-gnu": true,
+  "linker-flavor": "gcc",
+  "pre-link-args": {
+    "gcc": [
+			"-nostartfiles",
+      "-nostdlib",
+      "-m68000",
+      "-no-pie"
+    ]
+  },
+  "late-link-args": {
+    "gcc": [
+      "-Wl,--gc-sections",
+      "/home/takashi/current/libcmini/build/objs/crt0.o",
+      "-Wl,--start-group",
+      "-L/home/takashi/current/libcmini/build",
+      "-lcmini",
+      "-Wl,--end-group",
+      "-lgcc"
+    ]
+  },
+  "max-atomic-width": 32,
+  "os": "mint",
+  "panic-strategy": "abort",
+  "position-independent-executables": false,
+  "relocation-model": "static",
+  "static-position-independent-executables": false,
+  "target-endian": "big",
+  "target-mcount": "_mcount",
+  "target-pointer-width": 32,
+  "vendor": "atari"
+}

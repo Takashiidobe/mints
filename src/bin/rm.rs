@@ -1,11 +1,17 @@
 #![no_std]
 #![no_main]
 extern crate alloc;
+use alloc::format;
 use core::panic::PanicInfo;
 use libc_alloc::LibcAlloc;
 
+use alloc::ffi::CString;
+use alloc::fmt::format;
+use alloc::string::ToString;
+use alloc::vec::{self, Vec};
 use core::ffi::{CStr, c_char, c_int};
 use core::fmt::{self, Write};
+use core::slice;
 
 #[global_allocator]
 static ALLOCATOR: LibcAlloc = LibcAlloc;
@@ -64,18 +70,27 @@ unsafe extern "C" {
     fn write(fd: c_int, buf: *const u8, len: usize) -> isize;
 }
 
-use alloc::borrow::ToOwned as _;
-use alloc::string::String;
-use alloc::vec::Vec;
-use core::ffi::c_void;
-
 #[unsafe(no_mangle)]
-pub extern "C" fn main(argc: c_int, argv: *const *const c_char) -> c_int {
-    unsafe {
-        println!("{:?}, {:?}", argc, argv);
-    }
+pub extern "C" fn main(
+    argc: c_int,
+    argv: *const *const c_char,
+    envp: *const *const c_char,
+) -> c_int {
+    let args = parse_args(argc, argv);
+    for arg in &args[1..] {
+        let c_string = CString::new(*arg).unwrap();
 
+        let ptr: *const c_char = c_string.as_ptr();
+        unsafe { remove(ptr) };
+    }
     0
+}
+
+fn parse_args(argc: c_int, argv: *const *const c_char) -> Vec<&'static str> {
+    let args = unsafe { slice::from_raw_parts(argv, argc as usize) };
+    args.into_iter()
+        .map(|s| unsafe { CStr::from_ptr(s.clone()) }.to_str().unwrap())
+        .collect()
 }
 
 #[panic_handler]

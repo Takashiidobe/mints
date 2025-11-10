@@ -1,4 +1,5 @@
 #![no_std]
+
 extern crate alloc;
 pub mod stdio;
 
@@ -10,6 +11,7 @@ use core::{ffi::CStr, fmt::Write, slice};
 unsafe extern "C" {
     pub fn write(fd: c_int, buf: *const u8, len: usize) -> isize;
     pub fn printf(fmt: *const c_char, ...);
+    pub fn abort() -> !;
 }
 
 struct Fd(pub i16);
@@ -24,39 +26,48 @@ impl Write for Fd {
 }
 
 #[inline(always)]
-pub fn _print_to(fd: i16, args: fmt::Arguments) {
-    let _ = Fd(fd).write_fmt(args);
+pub fn print_to(fd: i16, args: fmt::Arguments) {
+    match args.as_str() {
+        Some(s) => {
+            let _ = Fd(fd).write_str(s);
+        }
+        None => panic!("non-const formatting is forbidden on this target"),
+    }
 }
 
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => {{
-        $crate::_print_to(1, core::format_args!($($arg)*));
+        $crate::print_to(1, core::format_args!($($arg)*));
     }}
 }
 
 #[macro_export]
 macro_rules! println {
-    () => { $crate::print!("\r\n") };
+    () => {{
+        $crate::print_to(1, core::format_args!("\r\n"));
+    }};
     ($($arg:tt)*) => {{
-        $crate::_print_to(1, core::format_args!($($arg)*));
-        $crate::_print_to(1, core::format_args!("\r\n"));
+        $crate::print_to(1, core::format_args!($($arg)*));
+        $crate::print_to(1, core::format_args!("\r\n"));
     }}
 }
 
 #[macro_export]
 macro_rules! eprint {
     ($($arg:tt)*) => {{
-        $crate::_print_to(2, core::format_args!($($arg)*));
+        $crate::print_to(2, core::format_args!($($arg)*));
     }}
 }
 
 #[macro_export]
 macro_rules! eprintln {
-    () => { $crate::eprint!("\r\n") };
+    () => {{
+        $crate::print_to(2, "\r\n");
+    }};
     ($($arg:tt)*) => {{
-        $crate::_print_to(2, core::format_args!($($arg)*));
-        $crate::_print_to(2, core::format_args!("\r\n"));
+        $crate::print_to(2, core::format_args!($($arg)*));
+        $crate::print_to(2, "\r\n");
     }}
 }
 

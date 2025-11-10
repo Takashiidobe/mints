@@ -32,6 +32,13 @@ implement `memalign`, so until then you'll have to use `mintlib` or
   issue, probably due to accessing formatting code indirectly. An `impl
   Error` doesn't seem to have the same issue.
 
+- To handle printing, The `print` macro calls `format_args.as_str()` 
+  which returns a `Some(s)` if the string itself can be folded into a 
+  string without requiring trait dispatch, otherwise, just panicking. It
+  would be preferable to do this at compile time, so that code like
+  `println!("{:?}", vec![1]);` would be compiler errors instead of
+  panics at runtime. As is, this code will panic and then sigabort.
+
 ## In Progress:
 
 - [x] rm

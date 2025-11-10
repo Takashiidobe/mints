@@ -3,12 +3,6 @@
 version = 4
 
 [[package]]
-name = "anyhow"
-version = "1.0.100"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
-
-[[package]]
 name = "libc_alloc"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -18,6 +12,5 @@ checksum = "7581282928bc99698341d1de7590964c28db747c164eaac9409432a3eaed098a"
 name = "mints"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "libc_alloc",
 ]

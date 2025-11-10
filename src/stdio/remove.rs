@@ -15,6 +15,20 @@ pub enum RemoveFileError<'a> {
     Unknown(c_long, &'a str),
 }
 
+pub trait Errno {
+    fn errno(&self) -> c_long;
+}
+
+impl Errno for RemoveFileError<'_> {
+    fn errno(&self) -> c_long {
+        match self {
+            RemoveFileError::FileNotFound(_) => -33,
+            RemoveFileError::AccessDenied(_) => -36,
+            RemoveFileError::Unknown(err_code, _) => *err_code,
+        }
+    }
+}
+
 impl fmt::Display for RemoveFileError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {

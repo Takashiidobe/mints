@@ -27,10 +27,10 @@
   "late-link-args": {
     "gcc": [
       "-Wl,--gc-sections",
-      "/home/takashi/current/libcmini/build/objs/crt0.o",
+      "/home/takashi/current/mintbox/build/objs/crt0.o",
       "-Wl,--start-group",
-      "-L/home/takashi/current/libcmini/build",
-      "-lcmini",
+      "-L/home/takashi/current/mintbox/build",
+      "-lcbox",
       "-Wl,--end-group",
       "-lgcc"
     ]

@@ -21,6 +21,17 @@ a replacement libc for smaller binaries, but it currently doesn't
 implement `memalign`, so until then you'll have to use `mintlib` or
 `mintbox`.
 
+## Size footguns to keep in mind
+
+- Any language feature that brings in compiler builtins will bloat the
+  binary to 300KB. This apparently includes derives (thiserror + noshell
+  seems to do this), as well as formatting certain things. If an i32 is
+  printed, then it doesn't pull in compiler-builtins, but if you debug
+  print it, it pulls in compiler-builtins, and the binary will go up to
+  300KB. It also seems like using a `Box<dyn Error>` causes the same
+  issue, probably due to accessing formatting code indirectly. An `impl
+  Error` doesn't seem to have the same issue.
+
 ## In Progress:
 
 - [x] rm

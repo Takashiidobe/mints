@@ -2,13 +2,14 @@
 extern crate alloc;
 pub mod stdio;
 
-use alloc::fmt;
 use alloc::vec::Vec;
 use core::ffi::{c_char, c_int};
+use core::fmt;
 use core::{ffi::CStr, fmt::Write, slice};
 
 unsafe extern "C" {
-    fn write(fd: c_int, buf: *const u8, len: usize) -> isize;
+    pub fn write(fd: c_int, buf: *const u8, len: usize) -> isize;
+    pub fn printf(fmt: *const c_char, ...);
 }
 
 struct Fd(pub i16);
